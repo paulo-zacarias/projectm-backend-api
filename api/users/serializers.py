@@ -3,7 +3,7 @@ from .models import Profile
 from rest_framework import serializers
 
 
-class UserProfileSerializer(serializers.ModelSerializer):
+class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile

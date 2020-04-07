@@ -25,7 +25,8 @@ from django.conf.urls.static import static
 # Wire up our API using automatic URL routing.
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
-    path('', include('users.urls')),
+    path('users/', include('users.urls')),
+    path('projects/', include('projects.urls')),
     # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
     path('admin/', admin.site.urls),
 ]
