@@ -26,9 +26,9 @@ from django.conf.urls.static import static
 # Additionally, we include login URLs for the browsable API.
 urlpatterns = [
     path('users/', include('users.urls')),
-    path('projects/', include('projects.urls')),
-    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
+    path('', include('projects.urls')),
     path('admin/', admin.site.urls),
+    # path('api-auth/', include('rest_framework.urls', namespace='rest_framework')),
 ]
 
 if settings.DEBUG:
