@@ -8,3 +8,7 @@ class Profile(models.Model):
 
     def __str__(self):
         return f'{self.user.username} Profile'
+
+    @property
+    def display_name(self):
+        return self.user.get_full_name()

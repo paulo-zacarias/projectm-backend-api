@@ -7,7 +7,7 @@ class UserProfileSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Profile
-        fields = ['image']
+        fields = ['image', 'display_name']
 
 
 class UserSerializer(serializers.HyperlinkedModelSerializer):
@@ -15,4 +15,4 @@ class UserSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = User
-        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'get_short_name', 'profile']
+        fields = ['url', 'username', 'email', 'first_name', 'last_name', 'profile']
