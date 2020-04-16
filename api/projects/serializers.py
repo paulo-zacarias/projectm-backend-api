@@ -7,6 +7,9 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
     class Meta:
         model = Project
         fields = ['url', 'name', 'description', 'admin', 'participants']
+
+        # The admin will be automatically assigned to the currently logged in user,
+        # this field will be added in the Project's view (create method) and is not required in the serializer
         extra_kwargs = {'admin': {'required': False}}
 
 
