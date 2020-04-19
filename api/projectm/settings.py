@@ -38,9 +38,17 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'rest_framework',
+    'rest_framework.authtoken',
     'corsheaders',
     'users',
     'projects'
+]
+
+PASSWORD_HASHERS = [
+    'django.contrib.auth.hashers.PBKDF2PasswordHasher',
+    'django.contrib.auth.hashers.PBKDF2SHA1PasswordHasher',
+    'django.contrib.auth.hashers.Argon2PasswordHasher',
+    'django.contrib.auth.hashers.BCryptSHA256PasswordHasher',
 ]
 
 MIDDLEWARE = [
@@ -125,6 +133,10 @@ REST_FRAMEWORK = {
         'djangorestframework_camel_case.parser.CamelCaseJSONParser',
         # Any other parsers
     ),
+
+    'DEFAULT_PERMISSION_CLASSES': [
+        'rest_framework.permissions.IsAuthenticated',
+    ]
 }
 # ...
 
