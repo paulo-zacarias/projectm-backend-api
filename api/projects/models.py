@@ -25,26 +25,34 @@ class Sprint(models.Model):
 
     def save(self, *args, **kwargs):
         self.full_clean()
-        super(Sprint,self).save(*args,**kwargs)
+        super(Sprint, self).save(*args, **kwargs)
 
 
 class Task(models.Model):
     STATUS = [
+        (0, 'Backlog'),
         (1, 'To Do'),
         (2, 'In progress'),
         (3, 'Done'),
     ]
 
-    name = models.CharField(max_length=50)
+    WEIGHT = [
+        (0, 'Low'),
+        (1, 'Medium'),
+        (2, 'High'),
+        (3, 'Critical'),
+    ]
+
+    title = models.CharField(max_length=50)
     description = models.CharField(max_length=250)
-    # weight =
+    weight = models.PositiveSmallIntegerField(choices=WEIGHT, default=1)
     story_points = models.IntegerField(validators=[MinValueValidator(0)])
-    status = models.PositiveSmallIntegerField(choices=STATUS, default=1)
+    status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     assigned_person = models.ForeignKey('auth.User', on_delete=models.CASCADE)
 
     def __str__(self):
-        return str(self.name)
+        return str(self.title)
 
 
 

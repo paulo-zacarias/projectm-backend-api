@@ -9,7 +9,7 @@ class ProjectSerializer(serializers.HyperlinkedModelSerializer):
         fields = ['url', 'name', 'description', 'admin', 'participants']
 
         # The admin will be automatically assigned to the currently logged in user,
-        # this field will be added in the Project's view (create method) and is not required in the serializer
+        # this field will be added through the Project's view (create method) and is not required in the serializer
         extra_kwargs = {'admin': {'required': False}}
 
 
@@ -24,4 +24,4 @@ class TaskSerializer(serializers.HyperlinkedModelSerializer):
 
     class Meta:
         model = Task
-        fields = ['url', 'name', 'description', 'story_points', 'status', 'sprint', 'assigned_person']
+        fields = ['url', 'title', 'description', 'weight', 'story_points', 'status', 'sprint', 'assigned_person']
