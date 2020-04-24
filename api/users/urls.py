@@ -1,7 +1,7 @@
 from django.urls import include, path
 from rest_framework import routers
 # from .views import UserViewSet, UserProfileViewSet
-from .views import UserList, UserDetail, UserCreate, UserUpdate, UserDelete, ProfileImageUpdate
+from .views import UserList, UserDetail, UserCreate, UserUpdate, UserDelete, ProfileImageUpdate, CustomAuthToken
 
 # router = routers.DefaultRouter()
 # router.register(r'', UserViewSet)
@@ -19,4 +19,6 @@ urlpatterns = [
     path(r'<int:pk>/update', UserUpdate.as_view(), name='user-update'),
     path(r'<int:pk>/delete', UserDelete.as_view(), name='user-delete'),
     path(r'profile/<int:pk>/picture-upload', ProfileImageUpdate.as_view(), name='picture-upload'),
+
+    path(r'auth', CustomAuthToken.as_view(), name='user-auth'),
 ]

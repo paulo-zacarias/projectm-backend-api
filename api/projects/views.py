@@ -39,5 +39,8 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsProjectParticipant]
+
+    def perform_create(self, serializer):
+        # Define the logged in user as assigned person directly, rather than from request data.
+        serializer.save(assigned_person=self.request.user)
