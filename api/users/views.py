@@ -1,26 +1,42 @@
 from django.contrib.auth.models import User
+from rest_framework import generics
+from rest_framework.permissions import AllowAny, IsAdminUser
+from .serializers import UserSerializer, UserSerializerUpdate, ProfileSerializer
+from .permissions import IsAdminOrIsSelf
 from .models import Profile
-from rest_framework import viewsets
-from rest_framework.permissions import IsAuthenticated
-from rest_framework.authentication import TokenAuthentication
-from .serializers import UserSerializer, UserProfileSerializer
 
 
-class UserViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows users to be viewed or edited.
-    """
-    queryset = User.objects.all().order_by('first_name')
+class UserList(generics.ListAPIView):
+    queryset = User.objects.all()
     serializer_class = UserSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
 
 
-class UserProfileViewSet(viewsets.ModelViewSet):
-    """
-    API endpoint that allows profiles to be viewed or edited.
-    """
+class UserDetail(generics.RetrieveAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+
+
+class UserCreate(generics.CreateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [AllowAny]
+
+
+class UserUpdate(generics.UpdateAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializerUpdate
+    permission_classes = [IsAdminOrIsSelf]
+
+
+class UserDelete(generics.DestroyAPIView):
+    queryset = User.objects.all()
+    serializer_class = UserSerializer
+    permission_classes = [IsAdminUser]
+
+
+class ProfileImageUpdate(generics.UpdateAPIView):
     queryset = Profile.objects.all()
-    serializer_class = UserProfileSerializer
-    authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated]
+    serializer_class = ProfileSerializer
+    permission_classes = [IsAdminOrIsSelf]
+
+
