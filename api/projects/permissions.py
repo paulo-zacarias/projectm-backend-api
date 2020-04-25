@@ -2,7 +2,7 @@ from rest_framework import permissions
 from .models import Sprint
 
 
-class IsAdminOrReadOnly(permissions.BasePermission):
+class IsProjectAdminOrReadOnly(permissions.BasePermission):
     """
     Object-level permission to only allow admin of an project to edit it.
     """

@@ -10,8 +10,19 @@ from .models import Profile
 
 
 class UserList(generics.ListAPIView):
-    queryset = User.objects.all()
     serializer_class = UserSerializer
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned users to a given project,
+        by filtering against a `project` query parameter in the URL.
+        Accessible through URL: /users/?project='project_id'
+        """
+        queryset = User.objects.all()
+        project = self.request.query_params.get('project', None)
+        if project is not None:
+            queryset = queryset.filter(projects_participation=project)
+        return queryset
 
 
 class UserDetail(generics.RetrieveAPIView):
