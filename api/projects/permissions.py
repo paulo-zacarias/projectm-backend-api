@@ -2,7 +2,7 @@ from rest_framework import permissions
 from .models import Sprint
 
 
-class IsAdminOrReadOnly(permissions.BasePermission):
+class IsProjectAdminOrReadOnly(permissions.BasePermission):
     """
     Object-level permission to only allow admin of an project to edit it.
     """
@@ -28,8 +28,9 @@ class IsProjectParticipant(permissions.BasePermission):
             return True
         else:
             # Check permissions for write request
-            username = request.user.username
-            is_participant = Sprint.objects.get(id=1).project.participants.filter(username=username).exists()
+            user_pk = request.user.pk
+            sprint = request.data['sprint']
+            is_participant = Sprint.objects.get(id=sprint).project.participants.filter(pk=user_pk).exists()
             return is_participant
 
 

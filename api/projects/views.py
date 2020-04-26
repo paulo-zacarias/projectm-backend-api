@@ -3,7 +3,7 @@ from rest_framework import viewsets
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from .serializers import ProjectSerializer, SprintSerializer, TaskSerializer
-from .permissions import IsAdminOrReadOnly, IsProjectParticipant
+from .permissions import IsProjectAdminOrReadOnly, IsProjectParticipant
 
 
 class ProjectViewSet(viewsets.ModelViewSet):
@@ -14,7 +14,7 @@ class ProjectViewSet(viewsets.ModelViewSet):
     serializer_class = ProjectSerializer
 
     authentication_classes = [TokenAuthentication]
-    permission_classes = [IsAuthenticated, IsAdminOrReadOnly]
+    permission_classes = [IsAuthenticated, IsProjectAdminOrReadOnly]
 
     def perform_create(self, serializer):
         # Define the logged in user as admin directly, rather than from request data.
@@ -50,5 +50,8 @@ class TaskViewSet(viewsets.ModelViewSet):
     queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
-    authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated, IsProjectParticipant]
+
+    def perform_create(self, serializer):
+        # Define the logged in user as assigned person directly, rather than from request data.
+        serializer.save(assigned_person=self.request.user)

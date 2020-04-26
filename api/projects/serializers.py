@@ -21,7 +21,7 @@ class SprintSerializer(serializers.ModelSerializer):
 
     def validate(self, data):
         """
-        Check that the start is before the stop.
+        Check that the start date is before the end date.
         """
         if data['start_date'] > data['end_date']:
             raise serializers.ValidationError("Start date must be earlier than end date.")
