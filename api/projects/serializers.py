@@ -19,6 +19,14 @@ class SprintSerializer(serializers.ModelSerializer):
         model = Sprint
         fields = ['id', 'start_date', 'end_date', 'planned_story_points', 'project']
 
+    def validate(self, data):
+        """
+        Check that the start is before the stop.
+        """
+        if data['start_date'] > data['end_date']:
+            raise serializers.ValidationError("Start date must be earlier than end date.")
+        return data
+
 
 class TaskSerializer(serializers.ModelSerializer):
 
@@ -30,10 +38,3 @@ class TaskSerializer(serializers.ModelSerializer):
         # this field will be added through the Project's view (create method) and is not required in the serializer
         extra_kwargs = {'assigned_person': {'required': False}}
 
-    def validate(self, data):
-        """
-        Check that the start is before the stop.
-        """
-        if data['start_date'] > data['end_date']:
-            raise serializers.ValidationError("Start date must be earlier than end date.")
-        return data

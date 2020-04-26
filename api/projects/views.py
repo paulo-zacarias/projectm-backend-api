@@ -25,11 +25,22 @@ class SprintViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows sprints to be viewed or edited.
     """
-    queryset = Sprint.objects.all()
     serializer_class = SprintSerializer
 
     authentication_classes = [TokenAuthentication]
     permission_classes = [IsAuthenticated]
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned users to a given project,
+        by filtering against a `project` query parameter in the URL.
+        Accessible through URL: /sprints/?project='project_id'
+        """
+        queryset = Sprint.objects.all()
+        project = self.request.query_params.get('project_id', None)
+        if project is not None:
+            queryset = queryset.filter(project=project)
+        return queryset
 
 
 class TaskViewSet(viewsets.ModelViewSet):
