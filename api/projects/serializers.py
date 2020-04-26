@@ -19,6 +19,8 @@ class SprintSerializer(serializers.ModelSerializer):
         model = Sprint
         fields = ['id', 'start_date', 'end_date', 'planned_story_points', 'project']
 
+        extra_kwargs = {'planned_story_points': {'read_only': True, 'required': False}}
+
     def validate(self, data):
         """
         Check that the start date is before the end date.
