@@ -1,6 +1,7 @@
 from django.db import models
 from django.core.validators import MinValueValidator
 from .validators import validate_start_date
+from django.db.models import Sum
 
 
 class Project(models.Model):
@@ -16,7 +17,6 @@ class Project(models.Model):
 class Sprint(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
-    planned_story_points = models.IntegerField(validators=[MinValueValidator(0)])
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
     def clean(self, *args, **kwargs):
@@ -26,6 +26,13 @@ class Sprint(models.Model):
     def save(self, *args, **kwargs):
         self.full_clean()
         super(Sprint, self).save(*args, **kwargs)
+
+    @property
+    def planned_story_points(self):
+        story_points_sum = Task.objects.filter(sprint=self.id).aggregate(Sum('story_points'))['story_points__sum']
+        if story_points_sum is not None:
+            return story_points_sum
+        return 0
 
 
 class Task(models.Model):
@@ -46,7 +53,7 @@ class Task(models.Model):
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=250)
     weight = models.PositiveSmallIntegerField(choices=WEIGHT, default=1)
-    story_points = models.IntegerField(validators=[MinValueValidator(0)])
+    story_points = models.IntegerField(validators=[MinValueValidator(1)])
     status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
     sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     assigned_person = models.ForeignKey('auth.User', on_delete=models.CASCADE)
