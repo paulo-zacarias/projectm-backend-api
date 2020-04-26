@@ -19,7 +19,7 @@ class UserList(generics.ListAPIView):
         Accessible through URL: /users/?project='project_id'
         """
         queryset = User.objects.all()
-        project = self.request.query_params.get('project', None)
+        project = self.request.query_params.get('project_id', None)
         if project is not None:
             queryset = queryset.filter(projects_participation=project)
         return queryset
