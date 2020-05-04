@@ -2,8 +2,6 @@ from django.db import models
 from django.core.validators import MinValueValidator
 from django.db.models import Sum
 
-from .validators import validate_start_date, validate_task_vs_project
-
 
 class Project(models.Model):
     name = models.CharField(max_length=50)
@@ -18,7 +16,6 @@ class Project(models.Model):
 class Sprint(models.Model):
     start_date = models.DateField()
     end_date = models.DateField()
-    # planned_story_points = models.IntegerField(validators=[MinValueValidator(0)])
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
     tasks = models.ManyToManyField('Task', related_name='sprints', blank=True)
 
