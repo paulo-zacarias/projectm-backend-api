@@ -1,5 +1,5 @@
 from rest_framework import permissions
-from .models import Sprint
+from .models import Project
 
 
 class IsProjectAdminOrReadOnly(permissions.BasePermission):
@@ -29,8 +29,8 @@ class IsProjectParticipant(permissions.BasePermission):
         else:
             # Check permissions for write request
             user_pk = request.user.pk
-            sprint = request.data['sprint']
-            is_participant = Sprint.objects.get(id=sprint).project.participants.filter(pk=user_pk).exists()
+            project_id = request.data['project']
+            is_participant = Project.objects.get(id=project_id).participants.filter(pk=user_pk).exists()
             return is_participant
 
 

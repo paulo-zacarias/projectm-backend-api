@@ -13,6 +13,17 @@ class ProjectSerializer(serializers.ModelSerializer):
         extra_kwargs = {'admin': {'required': False}}
 
 
+class TaskSerializer(serializers.ModelSerializer):
+
+    class Meta:
+        model = Task
+        fields = ['id', 'title', 'description', 'weight', 'story_points', 'status', 'assigned_person', 'project', 'sprints']
+
+        # The assigned person will be automatically assigned to the currently logged in user,
+        # this field will be added through the Project's view (create method) and is not required in the serializer
+        extra_kwargs = {'assigned_person': {'required': False}}
+
+
 class SprintSerializer(serializers.ModelSerializer):
 
     class Meta:
@@ -25,15 +36,10 @@ class SprintSerializer(serializers.ModelSerializer):
         """
         if data['start_date'] > data['end_date']:
             raise serializers.ValidationError("Start date must be earlier than end date.")
+    #     tasks = data['tasks']
+    #     for task in tasks:
+    #         if task.project.id != self.instance.project.id:
+    #             raise serializers.ValidationError(f"The task {task.id} cannot be added to sprint"
+    #                                               f"as they don't belong to same project {self.instance.project}.")
+
         return data
-
-
-class TaskSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Task
-        fields = ['id', 'title', 'description', 'weight', 'story_points', 'status', 'sprint', 'assigned_person']
-
-        # The assigned person will be automatically assigned to the currently logged in user,
-        # this field will be added through the Project's view (create method) and is not required in the serializer
-        extra_kwargs = {'assigned_person': {'required': False}}

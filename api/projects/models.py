@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MinValueValidator
-from .validators import validate_start_date
+from .validators import validate_start_date, validate_task_vs_project
 
 
 class Project(models.Model):
@@ -30,10 +30,9 @@ class Sprint(models.Model):
 
 class Task(models.Model):
     STATUS = [
-        (0, 'Backlog'),
-        (1, 'To Do'),
-        (2, 'In progress'),
-        (3, 'Done'),
+        (0, 'To Do'),
+        (1, 'In progress'),
+        (2, 'Done'),
     ]
 
     WEIGHT = [
@@ -46,13 +45,19 @@ class Task(models.Model):
     title = models.CharField(max_length=50)
     description = models.CharField(max_length=250)
     weight = models.PositiveSmallIntegerField(choices=WEIGHT, default=1)
-    story_points = models.IntegerField(validators=[MinValueValidator(0)])
+    story_points = models.IntegerField(validators=[MinValueValidator(1)], default=1)
     status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
-    sprint = models.ForeignKey(Sprint, on_delete=models.CASCADE)
     assigned_person = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    project = models.ForeignKey(Project, on_delete=models.CASCADE)
+    sprints = models.ManyToManyField('Sprint', related_name='tasks', blank=True)
 
     def __str__(self):
         return str(self.title)
 
+    def clean(self, *args, **kwargs):
+        validate_task_vs_project(self.project, self.sprints)
 
+    def save(self, *args, **kwargs):
+        self.full_clean()
+        super(Task, self).save(*args, **kwargs)
 
