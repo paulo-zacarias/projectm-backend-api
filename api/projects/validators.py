@@ -15,11 +15,11 @@ def validate_start_date(start_date, end_date, latest_end_date):
         )
 
 
-def validate_task_vs_project(project, sprints):
-    sprints = sprints.all()
-    for sprint in sprints:
-        if sprint.project.id != project.id:
+def validate_task_vs_project(project, tasks):
+    tasks = tasks.all()
+    for task in tasks:
+        if task.project.id != project.id:
             raise ValidationError(
                 _('The task "%(value)s" cannot be added to this sprint because it belong to a different project.'),
-                params={'value': sprint.id},
+                params={'value': task.id},
             )
