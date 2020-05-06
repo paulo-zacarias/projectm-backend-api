@@ -65,6 +65,8 @@ MIDDLEWARE = [
 
 ROOT_URLCONF = 'projectm.urls'
 
+APPEND_SLASH = False
+
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
@@ -113,9 +115,12 @@ AUTH_PASSWORD_VALIDATORS = [
     },
 ]
 
-CORS_ORIGIN_WHITELIST = [
-    "http://localhost:4200"
-]
+# CORS_ORIGIN_WHITELIST = [
+#     "http://localhost:4200"
+# ]
+
+CORS_ORIGIN_ALLOW_ALL = True
+
 
 # ...
 REST_FRAMEWORK = {

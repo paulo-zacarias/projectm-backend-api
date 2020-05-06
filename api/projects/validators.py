@@ -13,3 +13,13 @@ def validate_start_date(start_date, end_date, latest_end_date):
             _('Overlapping sprints are not allowed! Latest sprint in this project ends on  %(value)s.'),
             params={'value': latest_end_date},
         )
+
+
+def validate_task_vs_project(project, tasks):
+    tasks = tasks.all()
+    for task in tasks:
+        if task.project.id != project.id:
+            raise ValidationError(
+                _('The task "%(value)s" cannot be added to this sprint because it belong to a different project.'),
+                params={'value': task.id},
+            )
