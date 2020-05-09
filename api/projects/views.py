@@ -47,7 +47,7 @@ class TaskViewSet(viewsets.ModelViewSet):
     """
     API endpoint that allows tasks to be viewed or edited.
     """
-    queryset = Task.objects.all()
+    # queryset = Task.objects.all()
     serializer_class = TaskSerializer
 
     permission_classes = [IsAuthenticated, IsProjectParticipant]
@@ -55,3 +55,23 @@ class TaskViewSet(viewsets.ModelViewSet):
     def perform_create(self, serializer):
         # Define the logged in user as assigned person directly, rather than from request data.
         serializer.save(assigned_person=self.request.user)
+
+    def get_queryset(self):
+        """
+        Optionally restricts the returned users to a given project, sprint or user&project,
+        by filtering against a `project` query parameter in the URL.
+        Accessible through URL: /tasks/?sprint_id='sprint_id'
+        Or URL: /tasks/?project_id='project_id'
+        Or URL: /tasks/?project_id='project_id'&user_id='user_id'
+        """
+        queryset = Task.objects.all()
+        sprint = self.request.query_params.get('sprint_id', None)
+        project = self.request.query_params.get('project_id', None)
+        person = self.request.query_params.get('user_id', None)
+        if sprint is not None:
+            queryset = queryset.filter(sprints__id=sprint)
+        if project is not None:
+            queryset = queryset.filter(project=project)
+            if person is not None:
+                queryset = queryset.filter(assigned_person=person)
+        return queryset
