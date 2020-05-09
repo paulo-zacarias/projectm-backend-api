@@ -22,13 +22,23 @@ class SprintSerializer(serializers.ModelSerializer):
     def validate(self, data):
         """
         Check that the start date is before the end date.
+        Workaround to solve issue with date validation, that would prevent adding new tasks
+        POST and PUT will check for start and end dates, those should be used to create and edit sprint, respectively
+        PATCH should be used when only adding new tasks (skips date validation)
         """
-        # First check if the start and end date are present, meaning it is either POST or PUT request:
+        # First check if the start and end date are present, for POST and PUT method:
         if data.get('start_date') and data.get('end_date') is not None:
             if data['start_date'] > data['end_date']:
                 raise serializers.ValidationError("Start date must be earlier than end date.")
 
-            latest_sprint = Sprint.objects.all().filter(project=self.initial_data['project']).latest('end_date')
+            sprints = Sprint.objects.all().filter(project=self.initial_data['project'])
+            # If instance exists, means it is a PUT request and the sprint to be updated should be exclude from de query
+            if self.instance is not None:
+                sprint_id = self.instance.id
+                latest_sprint = sprints.exclude(id=sprint_id).latest('end_date')
+            # Other, if instance doesn't exit, means it is a POST request so we query all sprints
+            else:
+                latest_sprint = sprints.latest('end_date')
             if data['start_date'] < latest_sprint.end_date:
                 raise serializers.ValidationError(f"Overlapping sprints are not allowed!"
                                                   f"Latest sprint in this project ends on {latest_sprint.end_date}")
