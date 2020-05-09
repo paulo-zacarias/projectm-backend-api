@@ -5,7 +5,7 @@ from .views import ProjectViewSet, SprintViewSet, TaskViewSet
 router = routers.DefaultRouter()
 router.register(r'projects', ProjectViewSet)
 router.register(r'sprints', SprintViewSet, basename='sprints')  # 'basename' allows the queryset to be override in view
-router.register(r'tasks', TaskViewSet)
+router.register(r'tasks', TaskViewSet, basename='tasks')  # 'basename' allows the queryset to be override in view
 
 urlpatterns = [
     path('', include(router.urls)),
