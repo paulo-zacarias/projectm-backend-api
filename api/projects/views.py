@@ -36,10 +36,10 @@ class SprintViewSet(viewsets.ModelViewSet):
         by filtering against a `project` query parameter in the URL.
         Accessible through URL: /sprints/?project='project_id'
         """
-        queryset = Sprint.objects.all()
+        queryset = Sprint.objects.all().order_by('-end_date')
         project = self.request.query_params.get('project_id', None)
         if project is not None:
-            queryset = queryset.filter(project=project)
+            queryset = queryset.filter(project=project).order_by('-end_date')
         return queryset
 
 
