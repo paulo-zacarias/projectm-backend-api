@@ -1,7 +1,7 @@
 from .models import Project, Sprint, Task
-from django.contrib.auth.models import User
 from rest_framework import serializers
 from users.serializers import UserSerializer
+
 
 class ProjectSerializer(serializers.ModelSerializer):
 
@@ -81,10 +81,3 @@ class TaskSerializer(serializers.ModelSerializer):
         instance.save()
 
         return instance
-
-
-class MiniTaskSerializer(serializers.ModelSerializer):
-
-    class Meta:
-        model = Task
-        fields = ['id', 'title', 'story_points', 'status', 'project']
