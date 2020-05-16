@@ -65,7 +65,7 @@ class TaskSerializer(serializers.ModelSerializer):
         user = validated_data.pop('assigned_person')
         instance = Task.objects.create(**validated_data)
         instance.assigned_person = user
-        instance.save
+        instance.save()
         return instance
 
     def update(self, instance, validated_data):
