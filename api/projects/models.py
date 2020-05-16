@@ -46,7 +46,7 @@ class Task(models.Model):
     weight = models.PositiveSmallIntegerField(choices=WEIGHT, default=1)
     story_points = models.IntegerField(validators=[MinValueValidator(1)], default=1)
     status = models.PositiveSmallIntegerField(choices=STATUS, default=0)
-    assigned_person = models.ForeignKey('auth.User', on_delete=models.CASCADE)
+    assigned_person = models.ForeignKey('auth.User', on_delete=models.CASCADE, null=True, blank=True)
     project = models.ForeignKey(Project, on_delete=models.CASCADE)
 
 

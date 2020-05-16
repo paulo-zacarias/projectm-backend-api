@@ -1,5 +1,5 @@
 from .models import Project, Sprint, Task
-from rest_framework import viewsets
+from rest_framework import viewsets, generics
 from rest_framework.permissions import IsAuthenticated
 from rest_framework.authentication import TokenAuthentication
 from .serializers import ProjectSerializer, SprintSerializer, TaskSerializer
@@ -52,8 +52,12 @@ class TaskViewSet(viewsets.ModelViewSet):
 
     permission_classes = [IsAuthenticated, IsProjectParticipant]
 
+    # perform_create and perform_update define the logged in user as assigned person directly,
+    # rather than from request data:
     def perform_create(self, serializer):
-        # Define the logged in user as assigned person directly, rather than from request data.
+        serializer.save(assigned_person=self.request.user)
+
+    def perform_update(self, serializer):
         serializer.save(assigned_person=self.request.user)
 
     def get_queryset(self):
@@ -68,6 +72,7 @@ class TaskViewSet(viewsets.ModelViewSet):
         sprint = self.request.query_params.get('sprint_id', None)
         project = self.request.query_params.get('project_id', None)
         person = self.request.query_params.get('user_id', None)
+
         if sprint is not None:
             queryset = queryset.filter(sprints__id=sprint)
         if project is not None:

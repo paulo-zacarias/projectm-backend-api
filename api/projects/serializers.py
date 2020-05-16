@@ -1,5 +1,6 @@
 from .models import Project, Sprint, Task
 from rest_framework import serializers
+from users.serializers import UserSerializer
 
 
 class ProjectSerializer(serializers.ModelSerializer):
@@ -54,10 +55,29 @@ class SprintSerializer(serializers.ModelSerializer):
 
 
 class TaskSerializer(serializers.ModelSerializer):
+    assigned_person = UserSerializer(read_only=True)
+
     class Meta:
         model = Task
-        fields = ['id', 'title', 'description', 'weight', 'story_points', 'status', 'assigned_person', 'project']
+        fields = ['id', 'title', 'description', 'weight', 'story_points', 'status', 'project', 'assigned_person']
 
-        # The assigned person will be automatically assigned to the currently logged in user,
-        # this field will be added through the Project's view (create method) and is not required in the serializer
-        extra_kwargs = {'assigned_person': {'required': False}}
+    def create(self, validated_data):
+        user = validated_data.pop('assigned_person')
+        instance = Task.objects.create(**validated_data)
+        instance.assigned_person = user
+        instance.save()
+        return instance
+
+    def update(self, instance, validated_data):
+        user = validated_data.pop('assigned_person')
+
+        instance.title = validated_data.get('title', instance.title)
+        instance.description = validated_data.get('description', instance.description)
+        instance.weight = validated_data.get('weight', instance.weight)
+        instance.story_points = validated_data.get('story_points', instance.story_points)
+        instance.status = validated_data.get('status', instance.status)
+        instance.project = validated_data.get('project', instance.project)
+        instance.assigned_person = user
+        instance.save()
+
+        return instance
