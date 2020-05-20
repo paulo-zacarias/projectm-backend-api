@@ -7,7 +7,7 @@ from rest_framework.response import Response
 from rest_framework.views import APIView
 
 from .serializers import UserSerializer, UserSerializerUpdate, ProfileSerializer, UpdatePasswordSerializer
-from .permissions import IsAdminOrIsSelf
+from .permissions import IsAdminOrIsSelf, IsSelfProfile
 from .models import Profile
 
 
@@ -53,7 +53,7 @@ class UserDelete(generics.DestroyAPIView):
 class ProfileImageUpdate(generics.UpdateAPIView):
     queryset = Profile.objects.all()
     serializer_class = ProfileSerializer
-    permission_classes = [IsAuthenticated, IsAdminOrIsSelf]
+    permission_classes = [IsAuthenticated, IsSelfProfile]
 
 
 class UpdatePassword(APIView):
